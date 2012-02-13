@@ -126,16 +126,7 @@ module Jekyll
       url = if permalink
         permalink
       else
-        {
-          "year"       => date.strftime("%Y"),
-          "month"      => date.strftime("%m"),
-          "day"        => date.strftime("%d"),
-          "title"      => CGI.escape(slug),
-          "i_day"      => date.strftime("%d").to_i.to_s,
-          "i_month"    => date.strftime("%m").to_i.to_s,
-          "categories" => categories.map { |c| URI.escape(c) }.join('/'),
-          "output_ext" => self.output_ext
-        }.inject(template) { |result, token|
+        self.url_components.inject(template) { |result, token|
           result.gsub(/:#{Regexp.escape token.first}/, token.last)
         }.gsub(/\/\//, "/")
       end
@@ -144,6 +135,19 @@ module Jekyll
       @url = url.split('/').reject{ |part| part =~ /^\.+$/ }.join('/')
       @url += "/" if url =~ /\/$/
       @url
+    end
+
+    def url_components
+      {
+        "year"       => date.strftime("%Y"),
+        "month"      => date.strftime("%m"),
+        "day"        => date.strftime("%d"),
+        "title"      => CGI.escape(slug),
+        "i_day"      => date.strftime("%d").to_i.to_s,
+        "i_month"    => date.strftime("%m").to_i.to_s,
+        "categories" => categories.map { |c| URI.escape(c) }.join('/'),
+        "output_ext" => self.output_ext
+      }
     end
 
     # The UID for this post (useful in feeds)
