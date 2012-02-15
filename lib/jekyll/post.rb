@@ -128,7 +128,7 @@ module Jekyll
       else
         self.url_components.inject(template) { |result, token|
           result.gsub(/:#{Regexp.escape token.first}/, token.last)
-        }.gsub(/\/\//, "/")
+        }.gsub(/(?<!:)\/\//, "/")
       end
 
       # sanitize url
